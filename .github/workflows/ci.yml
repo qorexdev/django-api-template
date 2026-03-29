@@ -89,6 +89,7 @@ jobs:
           REDIS_URL=redis://redis:6379/0
           CORS_ALLOWED_ORIGINS=http://localhost:3000
           EOL
+          sed -i 's/^[[:space:]]*//' .env
 
       - name: Start services
         run: docker compose up -d --build --wait --wait-timeout 120
@@ -98,6 +99,10 @@ jobs:
           status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/health/)
           echo "Health endpoint returned: $status"
           [ "$status" = "200" ]
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose logs
 
       - name: Tear down
         if: always()
