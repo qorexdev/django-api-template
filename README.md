@@ -93,6 +93,31 @@ django-api-template/
 └── manage.py
 ```
 
+## Docker
+
+The project runs 5 services via Docker Compose: `web` (Django + gunicorn), `db` (PostgreSQL 16), `redis`, `celery` worker, and `celery-beat` scheduler.
+
+```bash
+cp .env.example .env   # edit as needed
+docker compose up -d --build
+```
+
+This runs migrations and collectstatic automatically on startup.
+
+To check logs:
+```bash
+docker compose logs -f web
+docker compose logs -f celery
+```
+
+Stop everything:
+```bash
+docker compose down        # keeps data
+docker compose down -v     # wipes volumes (db, static, media)
+```
+
+`.env.example` has all the env vars you need — `DATABASE_URL` and `REDIS_URL` point to the compose services by default, so it works out of the box.
+
 ## Adding a New App
 
 ```bash
